@@ -1,0 +1,39 @@
+# 查看docker启动了哪些容器
+docker ps -a
+
+# docker系统路径
+/home/verify
+
+# 项目路径
+/verify
+
+# 通过复制代码到容器里执行。
+# 运行镜像、创建容器
+docker run --name verify -p 9898:9898 ubuntu:20.04
+
+# 将文件复制到容器中
+# docker cp <本机文件路径> <容器名称或ID>:<容器内目标路径>
+docker cp /verify/list verify:/etc/apt/sources.list
+docker cp /verify verify:/home/verify
+
+# 安装python
+apt-get update
+apt-get install python3
+apt-get install python3-pip
+
+# 安装依赖
+pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+
+# 另开一个终端，更新策略
+# docker update --restart=always <容器名称或容器ID>
+docker update --restart=always verify
+
+# 停止容器
+docker stop verify
+
+# 启动容器
+docker start verify
+# 调试
+docker exec -it verify sh -c "/home/verify/run.sh && verify-service"
+# 执行命令后台启动服务
+docker exec -d verify sh -c "/home/verify/run.sh && verify-service"
