@@ -1,0 +1,24 @@
+# 首次启动MySQL服务，遇到报错缺什么补什么
+sudo docker run -p <映射本机端口>:<docker服务端口> --name <服务名> --network=<docker网关名>
+-v <本机日志路径>:/var/log/mysql -v <本机存数据路径>:/var/lib/mysql -v <本机配置路径>:/etc/mysql -v /r<本机路径>:/var/lib/mysql-files
+-e MYSQL_ROOT_PASSWORD=<密码> -d mysql:<版本号>
+
+sudo docker run -p 33066:3306 --name mysql \
+--network=mynetwork \
+-v /rpa/rpa_data/mysql/log:/var/log/mysql \
+-v /rpa/rpa_data/mysql/data:/var/lib/mysql \
+-v /rpa/rpa_data/mysql/conf:/etc/mysql \
+-v /rpa/rpa_data/mysql/conf.d:/etc/mysql/conf.d \
+-v /rpa/rpa_data/mysql/mysql-files:/var/lib/mysql-files \
+-e MYSQL_ROOT_PASSWORD=ABc123! \
+-d mysql:8.0.34
+
+# 获取服务ip
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
+
+# 获取服务端口映射
+docker port mysql
+
+# 进入容器调试
+docker run -it --rm mysql:8.0.34 mysql -h <服务ip> -P 3306 -u root -p
+docker run -it --rm mysql:8.0.34 mysql -h 127.0.0.1 -P 3306 -u root -p
